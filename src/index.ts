@@ -30,7 +30,7 @@ const server = http.createServer((req, res) => {
     default: {
       const data = JSON.stringify({ message: 'not implemented' });
 
-      res.writeHead(502, {
+      res.writeHead(500, {
         'Content-Type': 'application/json',
       });
       res.end(data);

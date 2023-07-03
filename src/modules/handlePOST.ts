@@ -21,9 +21,9 @@ export const handlePOST = (req: http.IncomingMessage, res: http.ServerResponse) 
       res.end(response.data);
     });
   } else {
-    const data = JSON.stringify({ message: 'invalid data in request' });
+    const data = JSON.stringify({ message: 'not found' });
 
-    res.writeHead(400, {
+    res.writeHead(404, {
       'Content-Type': 'application/json',
     });
     res.end(data);
