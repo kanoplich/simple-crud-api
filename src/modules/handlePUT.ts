@@ -1,27 +1,32 @@
 import http from 'http';
 import { db } from './database.js';
+import { IResponse } from './types.js';
+import { validatePUT } from './validate.js';
 
-export const handlerGET = (req: http.IncomingMessage, res: http.ServerResponse) => {
+export const handlerPUT = (req: http.IncomingMessage, res: http.ServerResponse) => {
   const userId = req.url?.split('/')[3];
 
-  if (req.url === '/api/users') {
-    const data = JSON.stringify(db.user);
-
-    res.writeHead(200, {
-      'Content-Type': 'application/json',
-    });
-    res.end(data);
-  } else if (req.url === `/api/users/${userId}`) {
+  if (req.url === `/api/users/${userId}`) {
     if (userId?.match(/^[0-9A-F]{8}-[0-9A-F]{4}-[4][0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i)) {
       const user = db.user.filter((item) => item.id === userId);
 
       if (user.length > 0) {
-        const data = JSON.stringify({ ...user[0] });
+        const buff: Uint8Array[] = [];
+        let response: IResponse;
 
-        res.writeHead(200, {
-          'Content-Type': 'application/json',
+        req.on('data', (chunk) => {
+          buff.push(chunk);
         });
-        res.end(data);
+
+        req.on('end', () => {
+          const body = Buffer.concat(buff).toString();
+          response = validatePUT(body, userId);
+
+          res.writeHead(response.code, {
+            'Content-Type': 'application/json',
+          });
+          res.end(response.data);
+        });
       } else {
         const data = JSON.stringify({ message: 'user is not found' });
 

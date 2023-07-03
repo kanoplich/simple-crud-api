@@ -1,5 +1,5 @@
 import http from 'http';
-import { validate } from './validate.js';
+import { validateGET } from './validate.js';
 import { IResponse } from './types.js';
 
 export const handlerPOST = (req: http.IncomingMessage, res: http.ServerResponse) => {
@@ -13,7 +13,7 @@ export const handlerPOST = (req: http.IncomingMessage, res: http.ServerResponse)
 
     req.on('end', () => {
       const body = Buffer.concat(buff).toString();
-      response = validate(body);
+      response = validateGET(body);
 
       res.writeHead(response.code, {
         'Content-Type': 'application/json',

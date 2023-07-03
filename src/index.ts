@@ -1,6 +1,7 @@
 import http from 'http';
 import { handlerGET } from './modules/handlerGET.js';
 import { handlerPOST } from './modules/handlePOST.js';
+import { handlerPUT } from './modules/handlePUT.js';
 import 'dotenv/config';
 
 const server = http.createServer((req, res) => {
@@ -15,8 +16,13 @@ const server = http.createServer((req, res) => {
       break;
     }
 
-    default: {
-      res.end('Not implemented');
+    case 'PUT': {
+      handlerPUT(req, res);
+      break;
+    }
+
+    case 'DELETE': {
+      handlerDELETE(req, res);
       break;
     }
   }
