@@ -1,28 +1,39 @@
 import http from 'http';
-import { handlerGET } from './modules/handlerGET.js';
-import { handlerPOST } from './modules/handlePOST.js';
-import { handlerPUT } from './modules/handlePUT.js';
+import { handleGET } from './modules/handleGET.js';
+import { handlePOST } from './modules/handlePOST.js';
+import { handlePUT } from './modules/handlePUT.js';
+import { handleDELETE } from './modules/handleDELETE.js';
 import 'dotenv/config';
 
 const server = http.createServer((req, res) => {
   switch (req.method) {
     case 'GET': {
-      handlerGET(req, res);
+      handleGET(req, res);
       break;
     }
 
     case 'POST': {
-      handlerPOST(req, res);
+      handlePOST(req, res);
       break;
     }
 
     case 'PUT': {
-      handlerPUT(req, res);
+      handlePUT(req, res);
       break;
     }
 
     case 'DELETE': {
-      handlerDELETE(req, res);
+      handleDELETE(req, res);
+      break;
+    }
+
+    default: {
+      const data = JSON.stringify({ message: 'not implemented' });
+
+      res.writeHead(502, {
+        'Content-Type': 'application/json',
+      });
+      res.end(data);
       break;
     }
   }

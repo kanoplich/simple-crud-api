@@ -1,8 +1,8 @@
 import http from 'http';
-import { validateGET } from './validate.js';
+import { validatePOST } from './validate.js';
 import { IResponse } from './types.js';
 
-export const handlerPOST = (req: http.IncomingMessage, res: http.ServerResponse) => {
+export const handlePOST = (req: http.IncomingMessage, res: http.ServerResponse) => {
   if (req.url === '/api/users') {
     const buff: Uint8Array[] = [];
     let response: IResponse;
@@ -13,12 +13,19 @@ export const handlerPOST = (req: http.IncomingMessage, res: http.ServerResponse)
 
     req.on('end', () => {
       const body = Buffer.concat(buff).toString();
-      response = validateGET(body);
+      response = validatePOST(body);
 
       res.writeHead(response.code, {
         'Content-Type': 'application/json',
       });
       res.end(response.data);
     });
+  } else {
+    const data = JSON.stringify({ message: 'invalid data in request' });
+
+    res.writeHead(400, {
+      'Content-Type': 'application/json',
+    });
+    res.end(data);
   }
 };

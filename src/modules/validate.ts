@@ -1,7 +1,7 @@
 import { db } from './database.js';
 import { v4 as uuidv4 } from 'uuid';
 
-export const validateGET = (body: string) => {
+export const validatePOST = (body: string) => {
   const { username, age, hobbies } = JSON.parse(body);
 
   if (
@@ -34,7 +34,13 @@ export const validatePUT = (body: string, id: string) => {
     typeof age === 'number' &&
     Array.isArray(hobbies)
   ) {
-    db.user.push({ id, username: username, age: age, hobbies: hobbies });
+    db.user.forEach((item) => {
+      if (item.id === id) {
+        item.username = username;
+        item.age = age;
+        item.hobbies = hobbies;
+      }
+    });
 
     return {
       code: 200,
